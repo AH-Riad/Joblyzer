@@ -21,9 +21,10 @@ model User {
   // Optional for WebAuthn support
   Authenticator Authenticator[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  jobs      Job[]    @relation("postedJobs")
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  jobs         Job[]          @relation("postedJobs")
+  applications Applications[]
 }
 
 model Account {
@@ -89,7 +90,20 @@ model Job {
   description String @db.Text
   salary      String
 
-  postedAt   DateTime @default(now())
-  postedById String
-  postedBy   User     @relation("postedJobs", fields: [postedById], references: [id])
+  postedAt     DateTime       @default(now())
+  postedById   String
+  postedBy     User           @relation("postedJobs", fields: [postedById], references: [id])
+  applications Applications[]
+}
+
+model Applications {
+  id        String   @id @default(cuid())
+  jobId     String
+  userId    String
+  status    String   @default("PENDING") //REVIEWING, ACCEPTED, REJECTED
+  appliedAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  job       Job      @relation(fields: [jobId], references: [id])
+
+  @@unique([jobId, userId])
 }
