@@ -23,6 +23,7 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  jobs      Job[]    @relation("postedJobs")
 }
 
 model Account {
@@ -78,4 +79,17 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, credentialID])
+}
+
+model Job {
+  id          String @id @default(cuid())
+  tittle      String
+  company     String
+  location    String
+  description String @db.Text
+  salary      String
+
+  postedAt   DateTime @default(now())
+  postedById String
+  postedBy   User     @relation("postedJobs", fields: [postedById], references: [id])
 }
