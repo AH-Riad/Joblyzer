@@ -1,5 +1,7 @@
+"use client";
 import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
+import { login } from "@/lib/helperAuth";
 
 export default function SignInPage() {
   return (
@@ -15,7 +17,10 @@ export default function SignInPage() {
         </div>
         <div className="mt-10">
           <div className="space-y-4">
-            <button className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200">
+            <button
+              onClick={() => login("github")}
+              className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200"
+            >
               <FaGithub className="w-6 h-6" />
               <span className="text-base font-medium">
                 Continue with GitHub
