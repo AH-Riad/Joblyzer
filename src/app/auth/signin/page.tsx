@@ -27,7 +27,10 @@ export default function SignInPage() {
               </span>
             </button>
 
-            <button className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200">
+            <button
+              onClick={() => login("google")}
+              className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200"
+            >
               <FcGoogle className="w-6 h-6" />
               <span className="text-base font-medium">
                 Continue with Google
