@@ -3,8 +3,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ModeToggle } from "./ModeToggle";
+import { useSession } from "next-auth/react";
+import { logout } from "@/lib/helperAuth";
 
 export default function Navbar() {
+  const { data: session } = useSession();
   return (
     <nav className="sticky top-0 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
       <div className="max-w-7xl mx-auto px-4">
@@ -32,29 +35,35 @@ export default function Navbar() {
             >
               Browse Jobs
             </Link>
-            <>
+            {session ? (
+              <>
+                <Link
+                  href="/jobs/post"
+                  className="text-dark-600 hover:text-dark-900 px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Post a Job
+                </Link>
+                <Link
+                  href="/dashboard"
+                  className="text-dark-600 hover:text-dark-900 px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Dashboard
+                </Link>
+                <button
+                  onClick={logout}
+                  className=" cursor-pointer text-dark-600 hover:text-dark-900 px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
               <Link
-                href="/jobs/post"
+                href="/auth/signin"
                 className="text-dark-600 hover:text-dark-900 px-3 py-2 rounded-md text-sm font-medium"
               >
-                Post a Job
+                Sign In
               </Link>
-              <Link
-                href="/dashboard"
-                className="text-dark-600 hover:text-dark-900 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Dashboard
-              </Link>
-              <button className="text-dark-600 hover:text-dark-900 px-3 py-2 rounded-md text-sm font-medium">
-                Sign Out
-              </button>
-            </>
-            <Link
-              href="/auth/signin"
-              className="text-dark-600 hover:text-dark-900 px-3 py-2 rounded-md text-sm font-medium"
-            >
-              Sign In
-            </Link>
+            )}
           </div>
         </div>
       </div>
