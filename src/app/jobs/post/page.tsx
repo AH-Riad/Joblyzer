@@ -1,6 +1,6 @@
 "use client";
 
-import { revalidatePath } from "next/cache";
+import { redirect } from "next/dist/server/api-utils";
 import { title } from "process";
 import { FormEvent } from "react";
 
@@ -24,7 +24,6 @@ export default function PostJobPage() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify(data),
       });
-      revalidatePath("/jobs");
     } catch (error) {
       console.log("Error getting formData", error);
     }
