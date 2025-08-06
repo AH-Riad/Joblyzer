@@ -18,7 +18,7 @@ export default function Navbar() {
                 className="h-8 w-auto"
               />
               <span className="ml-2 text-xl font-semibold text-gray-900">
-                Job Board
+                JobLyzer
               </span>
             </Link>
           </div>
