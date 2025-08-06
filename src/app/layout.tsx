@@ -4,6 +4,8 @@ import "./globals.css";
 import Navbar from "@/components/ui/Navbar";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "../../auth";
+import type { Session } from "next-auth";
+import { ThemeProvider } from "@/components/ui/ThemProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,18 +27,26 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
+  const session: Session | null = await auth();
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <header className="flex justify-end items-center p-4 gap-4 h-16"></header>
         <SessionProvider session={session}>
-          <div className="min-h-screen bg-gray-50 text-gray-900">
-            <Navbar />
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <div className="min-h-screen">
+              <Navbar />
 
-            <main className="container mx-auto px-4 py-8">{children}</main>
-          </div>
+              <main className="container mx-auto px-4 py-8">{children}</main>
+            </div>
+          </ThemeProvider>
         </SessionProvider>
       </body>
     </html>
