@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server";
 import { auth } from "../../../../auth";
+import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   const session = await auth();
-  console.log("Session in API route:", session);
 
   if (!session?.user || !session.user.id) {
     return NextResponse.redirect(new URL("/auth/signin", request.url));
@@ -21,7 +20,6 @@ export async function POST(request: Request) {
       },
     });
 
-    revalidatePath("/jobs");
     return NextResponse.json(job);
   } catch (error) {
     console.error("Error creating job:", error);
