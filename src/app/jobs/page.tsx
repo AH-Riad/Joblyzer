@@ -1,9 +1,26 @@
-"use client";
+// "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
+import { prisma } from "@/lib/prisma";
+type Job = {
+  id: string;
+  title: string;
+  company: string;
+  description: string;
+  type: string;
+  location: string;
+  salary?: string;
+  postedBy?: {
+    name?: string;
+  };
+};
 
-export default function JobPage() {
+export default async function JobPage() {
+  const jobs = await prisma.job.findMany({
+    orderBy: { postedAt: "desc" },
+    include: { postedBy: true },
+  });
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 px-4 sm:px-10 py-8">
       <div className="max-w-5xl mx-auto space-y-12">
@@ -41,13 +58,14 @@ export default function JobPage() {
             <button
               type="submit"
               className="bg-indigo-600 dark:bg-indigo-700 hover:bg-indigo-700 dark:hover:bg-indigo-800 text-white font-semibold rounded-lg px-6 py-3 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-            ></button>
+            >
+              Search
+            </button>
           </form>
         </section>
-
-        {/* Jobs Listing Section
+        {/* Jobs Listing Section */}
         <section>
-         jobs.length > 0 ? (
+          {jobs.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
               {jobs.map((job) => (
                 <div
@@ -76,7 +94,7 @@ export default function JobPage() {
                   </div>
                   <div className="mt-6 flex justify-between items-center">
                     <span className="text-sm text-gray-600 dark:text-gray-400">
-                      Posted by {job.postedBy?.name || "Unknown"}
+                      Posted by {job.postedBy?.id || "Unknown"}
                     </span>
                     <Link
                       href={`/jobs/${job.id}`}
@@ -94,8 +112,6 @@ export default function JobPage() {
             </p>
           )}
         </section>
-      </div>
-    </div> */}
       </div>
     </div>
   );
