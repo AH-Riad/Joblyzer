@@ -22,9 +22,9 @@ export default function PostJobPage() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!res.ok) {
-        throw new Error("Failed to post job");
-      }
+      window.location.href = "/jobs";
+
+      if (!res.ok) throw new Error("Failed to post job");
     } catch (error) {
       console.log("Error getting formData", error);
     }
@@ -140,7 +140,7 @@ export default function PostJobPage() {
 
           <button
             type="submit"
-            className="w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-xl transition-all duration-300 shadow-sm hover:shadow-lg"
+            className=" cursor-pointer w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-xl transition-all duration-300 shadow-sm hover:shadow-lg"
           >
             Post Job
           </button>
