@@ -17,13 +17,14 @@ export default function PostJobPage() {
     };
 
     try {
-      const res = await fetch("/api/jobs", {
+      const res = await fetch("/api/CreateJobs", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(data),
       });
-      window.location.href = "/jobs";
-
+      if (res.ok) {
+        window.location.href = "/jobs";
+      }
       if (!res.ok) throw new Error("Failed to post job");
     } catch (error) {
       console.log("Error getting formData", error);
