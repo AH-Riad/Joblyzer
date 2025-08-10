@@ -18,7 +18,7 @@ export default async function JobPage({
 }: {
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-  const { q, type, location } = searchParams || {};
+  const { q, type, location } = (await searchParams) || {};
 
   const query = q as string | undefined;
   const searchType = type as string | undefined;
