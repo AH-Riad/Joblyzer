@@ -1,5 +1,3 @@
-// "use client";
-
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 type Job = {
@@ -15,12 +13,38 @@ type Job = {
   };
 };
 
-export default async function JobPage() {
+export default async function JobPage({
+  searchParams,
+}: {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}) {
+  const { q, type, location } = searchParams || {};
+
+  const query = q as string | undefined;
+  const searchType = type as string | undefined;
+  const searchLocation = location as string | undefined;
+
   const jobs = await prisma.job.findMany({
+    where: {
+      AND: [
+        query
+          ? {
+              OR: [
+                { title: { contains: query, mode: "insensitive" } },
+                { company: { contains: query, mode: "insensitive" } },
+                { description: { contains: query, mode: "insensitive" } },
+              ],
+            }
+          : {},
+        type ? { type: searchType } : {},
+        searchLocation
+          ? { location: { contains: searchLocation, mode: "insensitive" } }
+          : {},
+      ],
+    },
     orderBy: { postedAt: "desc" },
     include: { postedBy: true },
   });
-
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 px-4 sm:px-10 py-8">
       <div className="max-w-5xl mx-auto space-y-12">
@@ -94,7 +118,7 @@ export default async function JobPage() {
                   </div>
                   <div className="mt-6 flex justify-between items-center">
                     <span className="text-sm text-gray-600 dark:text-gray-400">
-                      Posted by {job.postedBy?.id || "Unknown"}
+                      Posted by {job.postedBy?.name || "Unknown"}
                     </span>
                     <Link
                       href={`/jobs/${job.id}`}
