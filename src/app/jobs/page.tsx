@@ -16,10 +16,9 @@ type Job = {
 export default async function JobPage({
   searchParams,
 }: {
-  searchParams?: { [key: string]: string | string[] | undefined };
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const { q, type, location } = (await searchParams) || {};
-
   const query = q as string | undefined;
   const searchType = type as string | undefined;
   const searchLocation = location as string | undefined;
@@ -36,7 +35,7 @@ export default async function JobPage({
               ],
             }
           : {},
-        type ? { type: searchType } : {},
+        searchType ? { type: searchType } : {},
         searchLocation
           ? { location: { contains: searchLocation, mode: "insensitive" } }
           : {},
@@ -45,6 +44,7 @@ export default async function JobPage({
     orderBy: { postedAt: "desc" },
     include: { postedBy: true },
   });
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 px-4 sm:px-10 py-8">
       <div className="max-w-5xl mx-auto space-y-12">
