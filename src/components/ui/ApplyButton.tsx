@@ -19,14 +19,22 @@ function ApplyButton({ jobId }: { jobId: string }) {
 
     setErrorMessage("");
     try {
+      const response = await fetch(`/api/${jobId}`, {
+        method: "POST",
+      });
+      setApplicatiionStatus("success");
     } catch (error) {
       if (error instanceof Error) {
         setErrorMessage(error.message);
       } else {
         setErrorMessage("Failed to apply for this job");
       }
+      setApplicatiionStatus("error");
     }
   };
+  if (status === "loading") {
+    return <button disabled>Loading...</button>;
+  }
 
   return (
     <div>
