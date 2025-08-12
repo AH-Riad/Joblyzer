@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "../../../../auth";
-import { URL } from "next/dist/compiled/@edge-runtime/primitives/url";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(
@@ -9,18 +8,20 @@ export async function POST(
 ) {
   const session = await auth();
 
-  if (!session || !session.user.id) {
-    return NextResponse.redirect(new URL("/auth/signin", request.nextUrl));
+  if (!session || !session.user?.id) {
+    return new NextResponse("Unauthorized", { status: 401 });
   }
 
   try {
     const { jobId } = await params;
-    const Searchedjob = await prisma.job.findUnique({ where: { id: jobId } });
 
-    if (!Searchedjob) {
+    // Verify job exists
+    const searchedJob = await prisma.job.findUnique({ where: { id: jobId } });
+    if (!searchedJob) {
       return new NextResponse("Job not found", { status: 404 });
     }
 
+    // Prevent duplicate applications
     const existingApplication = await prisma.applications.findFirst({
       where: {
         jobId: jobId,
@@ -29,11 +30,12 @@ export async function POST(
     });
 
     if (existingApplication) {
-      return new NextResponse("You already have applied for this job", {
+      return new NextResponse("You already applied for this job", {
         status: 400,
       });
     }
 
+    // Create new application
     const application = await prisma.applications.create({
       data: {
         jobId: jobId,
@@ -41,9 +43,10 @@ export async function POST(
         status: "PENDING",
       },
     });
-    return NextResponse.json(application);
+
+    return NextResponse.json(application, { status: 201 });
   } catch (error) {
-    console.log("Error applying job", error);
+    console.error("Error applying job", error);
     return new NextResponse("Internal server error", { status: 500 });
   }
 }
