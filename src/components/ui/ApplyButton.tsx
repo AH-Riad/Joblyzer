@@ -11,9 +11,26 @@ function ApplyButton({ jobId }: { jobId: string }) {
     "idle" | "success" | "error"
   >("idle");
 
+  const handleApply = async () => {
+    if (!session) {
+      router.push("/auth/signin");
+      return;
+    }
+
+    setErrorMessage("");
+    try {
+    } catch (error) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage("Failed to apply for this job");
+      }
+    }
+  };
+
   return (
     <div>
-      <button>Apply</button>
+      <button onClick={handleApply}>Apply</button>
     </div>
   );
 }
