@@ -112,6 +112,22 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* Carousel Animation */
+@keyframes slide-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+.animate-slide-left {
+  animation: slide-left 20s linear infinite;
+}
+.animate-slide-left:hover {
+  animation-play-state: paused;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
