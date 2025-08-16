@@ -4,6 +4,9 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "../../../auth";
 
+// import types from Prisma
+import type { Job, Applications, User } from "@prisma/client";
+
 export default async function DashboardPage() {
   const session = await auth();
 
@@ -11,18 +14,19 @@ export default async function DashboardPage() {
     redirect("/auth/signin");
   }
 
+  //  Correctly typed
   const [applications, postedJobs] = await Promise.all([
     prisma.applications.findMany({
       where: { userId: session.user.id },
       include: { job: { include: { postedBy: true } } },
       orderBy: { appliedAt: "desc" },
-    }),
+    }) as Promise<(Applications & { job: Job & { postedBy: User } })[]>,
 
     prisma.job.findMany({
       where: { postedById: session.user.id },
       include: { _count: { select: { applications: true } } },
       orderBy: { postedAt: "desc" },
-    }),
+    }) as Promise<(Job & { _count: { applications: number } })[]>,
   ]);
 
   return (
